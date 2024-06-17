@@ -41,24 +41,24 @@ Menu:
 
 def add():
     unique_id = input("Enter unique ID (phone number or email): ")
-    name = input("Enter the contacts name: ").title()
-    if name.isalpha():
-        print("Name has been added")
+    name = input("Enter the contacts name: ").title() # .title() will print the first letter of the name in caps
+    if name.isalpha(): # If the name is letters it will print name has been added
+        print("Name has been added") 
     else:
-        print("Invalid input")
+        print("Invalid input") # If the name is anything or than letters it will print Invalid input and take the user back to the main menu to start over
         print("Please start again")
         return 
     
     phone_number = input("Enter the contacts phone number: ")
-    phone_reg = re.compile (r'^(\(\d{3}\)\d{7}|\d{10}|\d{3}-\d{3}-\d{4}|\(\d{3}\)\d{3}-\d{4})$')
+    phone_reg = re.compile (r'^(\(\d{3}\)\d{7}|\d{10}|\d{3}-\d{3}-\d{4}|\(\d{3}\)\d{3}-\d{4})$') # If number is inputted in any of these formats
     if phone_reg.match(phone_number): 
-        print("Phone number has been added")
-    else:
+        print("Phone number has been added") # It will print phone number has been added
+    else: # If anything other than numbers is inputted it will print Invalid input
         print("Invalid input please start again")
         return
     
     email_address = input("Enter the contacts email address: ")
-    email_reg = re.compile(r'[\w.-]+@[\w-]+.[a-z]{2,3}')
+    email_reg = re.compile(r'[\w.-]+@[\w-]+.[a-z]{2,3}') # If email is inputted in this format it will print email has been added
     if email_reg.match(email_address):
         print("Email has been added")
     else:
@@ -112,7 +112,7 @@ def delete():
 def search(): # Asks user for the unique ID of the contact that user wants to search for
     unique_id = input("Enter the unique ID (phone number or email) of the contact you want to search for: ")
     if unique_id in contacts: # If the unique ID is in the contacts it will prints Contact found
-        if '@' in unique_id:
+        if '@' in unique_id: # if the @ is in unique ID it will print contact found with the email
             print("Contact found") 
             print(contacts[unique_id]) # Print contacts information
     else:
