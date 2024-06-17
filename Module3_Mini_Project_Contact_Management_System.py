@@ -1,6 +1,6 @@
 # Contact Management System
 
-# import re
+import re 
 
 contacts = {} # Empty dictionary
 
@@ -38,11 +38,32 @@ Menu:
             print("Please enter a valid input") # If user inputs any other number other than 1-8 it will print please enter a valid input
             continue
 
-def add(): # Obtains contact information from the user
+
+def add():
     unique_id = input("Enter unique ID (phone number or email): ")
-    name = input("Enter the contacts name: ")
+    name = input("Enter the contacts name: ").title()
+    if name.isalpha():
+        print("Name has been added")
+    else:
+        print("Invalid input")
+        print("Please start again")
+        return 
+    
     phone_number = input("Enter the contacts phone number: ")
+    phone_reg = re.compile (r'^(\(\d{3}\)\d{7}|\d{10}|\d{3}-\d{3}-\d{4}|\(\d{3}\)\d{3}-\d{4})$')
+    if phone_reg.match(phone_number): 
+        print("Phone number has been added")
+    else:
+        print("Invalid input please start again")
+        return
+    
     email_address = input("Enter the contacts email address: ")
+    email_reg = re.compile(r'[\w.-]+@[\w-]+.[a-z]{2,3}')
+    if email_reg.match(email_address):
+        print("Email has been added")
+    else:
+        print("Invalid input please start again")
+
     additional_info = input("Enter additional info (e.g., address, notes): ")
 
 # Stores the contacts information in nested dictionary
@@ -51,58 +72,28 @@ def add(): # Obtains contact information from the user
     "phone_number": phone_number,
     "email_address": email_address,
     "additional_info": additional_info, 
-    }
+     }
+    
 
 # Exports contacts to a new text file through user input automatically
     with open('contacts.txt', 'w') as file:
         for unique_id, info in contacts.items():
             file.write(f"{unique_id}-:-{info["name"]}-:-{info["phone_number"]}-:-{info["email_address"]}-:-{info["additional_info"]}\n")
 
-# def valid_contacts(contacts):
-#     name_val = re.compile (r'^[a-zA-Z\s]*$')
-#     phone_val = re.compile (r'^\d{3}-\d{3}-\d{4}$') 
-#     email_val = re.compile (r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
-
-#     for unique_id, info in contacts.items():
-#         if not name_val.match(info['name']):
-#             print(f"Invalid name in contact ID {unique_id}.")
-#         elif not phone_val.match(info["phone_number"]):
-#             print(f"Invalid phone number in contact ID {unique_id}.")
-#         elif not email_val.match(info['email_address']):
-#             print(f"Invalid email address in contact ID {unique_id}.")
-#         else:
-#             print(f"All contact information is valid for contact ID {unique_id}.")
-            
-# valid_contacts(contacts)
-
-
-# import re
-
-# name_val = re.compile (r'^[a-zA-Z\s]*$')
-# phone_val = re.compile (r'^\d{3}-\d{3}-\d{4}$') 
-# email_val = re.compile (r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
-
-# for unique_id, info in contacts.items():
-#     if not name_val.match(info['name']):
-#         print(f"Invalid name in contact ID {unique_id}.")
-#     elif not phone_val.match(info["phone_number"]):
-#         print(f"Invalid phone number in contact ID {unique_id}.")
-#     elif not email_val.match(info['email_address']):
-#         print(f"Invalid email address in contact ID {unique_id}.")
-#     else:
-#         print(f"All contact information is valid for contact ID {unique_id}.")
-
-
 def edit():
     unique_id = input("Enter unique ID (phone number or email) of the contact you want to edit: ")
-    if unique_id in contacts:
-        update = input("Enter the key that needs updated (name, phone_number, email_address, additional_info): ")
-        new_value = input("Enter the new value for the key: ")
-        [*update] = new_value
+    info = input("Enter the key that needs updated (name, phone_number, email_address, additional_info): ")
+    new_value = input("Enter the new value for the key: ")
+    if unique_id in contacts and info in contacts[unique_id]:
+        contacts[unique_id][info] = new_value
+        print("Contact has been updated")
+    elif unique_id or info not in contacts:
+        print("Unable to find contact or info")
     else:
-        print("Unable to find contact")
+        return main()
     
     print(contacts)
+    
 
 def delete():
     while True: # Asks the user for the unique ID of the contact wanting to delete
@@ -121,11 +112,13 @@ def delete():
 def search(): # Asks user for the unique ID of the contact that user wants to search for
     unique_id = input("Enter the unique ID (phone number or email) of the contact you want to search for: ")
     if unique_id in contacts: # If the unique ID is in the contacts it will prints Contact found
-        print("Contact found") 
-        print(contacts[unique_id]) # Print contacts information
+        if '@' in unique_id:
+            print("Contact found") 
+            print(contacts[unique_id]) # Print contacts information
     else:
         print("Contact not found") # If the contact is not found in contact dictionary it will print contact not found
         return main()
+
 
 def display():
     print("Original Dictionary : " + str(contacts)) # Displays oiginal dictionary not being sorted
@@ -136,7 +129,7 @@ def import_contacts():
     with open("contacts.txt", "r") as file: # Opens the contacts txt file
         for line in file: # Imports contacts from a text file and adds them to the system
             unique_id, name, phone_number, email_address, additional_info = line.strip().split('-:-')
-            contacts[unique_id] = {'Name': name, "Phone_Number": phone_number, "Email_address": email_address, "Additional_info": additional_info}
+            contacts[unique_id] = {'name': name, "phone_Number": phone_number, "email_address": email_address, "additional_info": additional_info}
         print(contacts)
 
 
